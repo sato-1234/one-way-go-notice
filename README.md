@@ -1,3 +1,26 @@
+# 片道 GO 通知アプリ（設計中）
+
+現在、設計中になるため、コードは初期状態（Next.js のインストール）のままです。
+
+## 1. 環境構築
+
+```
+npx create-next-app@latest
+
+√ What is your project named? ... one-way-go-notice（プロジェクト名）
+√ Would you like to use TypeScript? ... Yes
+√ Would you like to use ESLint? ... Yes
+√ Would you like to use Tailwind CSS? ... No / Yes（任意）
+√ Would you like your code inside a `src/` directory? ... Yes
+√ Would you like to use App Router? (recommended) ... Yes
+√ Would you like to use Turbopack for `next dev`? ... No
+√ Would you like to customize the import alias (`@/*` by default)? ... No
+
+npm run dev
+```
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
