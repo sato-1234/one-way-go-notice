@@ -4,6 +4,8 @@
 
 ## 1. 環境構築
 
+Next.js
+
 ```
 npx create-next-app@latest
 
@@ -17,6 +19,19 @@ npx create-next-app@latest
 √ Would you like to customize the import alias (`@/*` by default)? ... No
 
 npm run dev
+```
+
+Clerk で認証で使用する applications 作成（アカウント登録後）
+
+```
+# 1. ブロバイダーはLINEのみ選択し以下実行
+npm install @clerk/nextjs
+
+# 2. .env.local作成して値を貼り付け
+# 3. middleware.tsを作成してコード貼り付け
+# 4. /src/app/layout.tsxにブロバイダーコード記述
+
+
 ```
 
 ---
