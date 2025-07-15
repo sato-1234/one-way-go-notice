@@ -10,7 +10,7 @@
 
 - **フレームワーク:** Next.js (App Router を使用)
 - **言語:** TypeScript
-- **スタイリング:** Tailwind CSS
+- **スタイリング:** Tailwind CSS（検討中）
 - **ホスティング:** Cloudflare Pages
 - **認証:** Clerk (LINE を主要な OAuth プロバイダーとして使用)
 - **データベース:** Supabase (データベース機能のみを使用。Supabase Auth は使用しない)
@@ -24,7 +24,7 @@
 ## 4. コーディングスタイルとルール
 
 - **コンポーネント:** 常に React の関数コンポーネントとフックを使用してください。
-- **ファイル名:** React コンポーネントのファイル名は `PascalCase` を使用してください (例: `RentalConditionForm.tsx`)。
+- **ファイル名:** Next.js の コンポーネントのファイル名は `kebab-case` を使用してください (例: `auth-button.tsx`)。
 - **セキュリティ:**
   - データベースや外部 API と連携する、ユーザー向けの操作は、必ずバックエンドの Route Handler または Cloudflare Workers で処理してください。クライアント側に秘密鍵を絶対に漏らさないでください。
   - データベースにアクセスする際は、ユーザーが自分のデータにしかアクセスできないことを常に保証してください。

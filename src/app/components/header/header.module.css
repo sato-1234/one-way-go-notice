@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  > h1 {
+    margin-right: auto;
+    font-size: 24px;
+    > a {
+      cursor: pointer;
+    }
+  }
+  > nav {
+    margin-left: auto;
+    > button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--button3);
+      color: #fff;
+    }
+    > button:hover {
+      opacity: 0.6;
+    }
+    > button:last-of-type {
+      margin-left: 15px;
+    }
+  }
+  @media screen and (max-width: 360px) {
+    display: block;
+    text-align: center;
+    > h1 {
+      padding-bottom: 10px;
+    }
+  }
+}
