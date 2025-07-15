@@ -44,17 +44,13 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=XXXX
 CLERK_SECRET_KEY=XXXX
 
 # https://clerk.com/docs/guides/custom-redirects
-
 # ログインページ（ログインしていない場合のリダイレクト先。最初のログインは新規登録になる）
-
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 
 # 新規登録またはログイン後にリダイレクトするパス（既存コンポーネントのみ有効）
-
 NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
 
 # FORCE_REDIRECT で解決しない場合のリダイレクト先（既存コンポーネントのみ有効）
-
 NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
 
 # サインアウト後は <ClerkProvider afterSignOutUrl={"/"}> で
