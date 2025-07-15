@@ -1,6 +1,6 @@
-# 片道 GO 通知アプリ（設計中）
+# 片道 GO 通知アプリ（実装中）
 
-現在、設計中になるため、コードは初期状態（Next.js のインストール）のままです。
+現在、実装中になるため、コードは未完成になります。
 
 ## 1. 環境構築
 
@@ -36,14 +36,17 @@ npm install @clerk/localizations
 # 5. .env.local作成して値を貼り付け
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=XXXX
 CLERK_SECRET_KEY=XXXX
+
 # https://clerk.com/docs/guides/custom-redirects
 # ログインページ（ログインしていない場合のリダイレクト先。最初のログインは新規登録になる）
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-# ログイン後にリダイレクトするパス（既存コンポーネントのみ有効）
-# 新規登録後にリダイレクトするパス（既存コンポーネントのみ有効）
+
+# 新規登録またはログイン後にリダイレクトするパス（既存コンポーネントのみ有効）
 NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
+
 # FORCE_REDIRECTで解決しない場合のリダイレクト先（既存コンポーネントのみ有効）
 NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
+
 # サインアウト後は <ClerkProvider afterSignOutUrl={"/"}> で
 
 NEXT_PUBLIC_LINE_ADD_URL=LINEの友達追加するURL
@@ -84,75 +87,75 @@ https://www.lycbiz.com/jp/service/line-official-account/
 
 7. コンソール設定 → 作成したブロバイダー選択 → 作成チャネル「Messaging API」選択 → チャネル基本設定
 
-プライバシーポリシー URL：https:XXX（任意だが本番の場合推奨）
+- プライバシーポリシー URL：https:XXX（任意だが本番の場合推奨）
 
 利用規約：https:XXX（任意だが本番の場合推奨）
 
 8. コンソール設定 → 作成したブロバイダー選択 → 作成チャネル「Messaging API」選択 → Messaging API 設定
 
-チャネルアクセストークン：発行
+- チャネルアクセストークン：発行
 
 9. コンソール設定 → 作成したブロバイダー選択 → 作成チャネル「Messaging API」選択 → セキュリティ設定
 
-IP アドレス追加：（任意だが本番の場合推奨）
+- IP アドレス追加：（任意だが本番の場合推奨）
 
 10. コンソール設定 → 作成したブロバイダー選択 → 新規チャネル作成 → 「LINE ログイン」
 
-チャネルの種類：LINE ログイン
+- チャネルの種類：LINE ログイン
 
-プロバイダー：作成したブロバイダー名
+- プロバイダー：作成したブロバイダー名
 
-会社・事業者の所在国・地域：日本
+- 会社・事業者の所在国・地域：日本
 
-チャネルアイコン：任意
+- チャネルアイコン：任意
 
-チャネル名：片道 GO 通知（非公式）
+- チャネル名：片道 GO 通知（非公式）
 
-チャネル説明：このアカウントでは、片道 GO 通知(https://XXXX)で入力した条件にそって、その条件に対して一度のみ通知いたします。（全条件の場合、新しい片道レンタカーが表示される度に通知いたします）
+- チャネル説明：このアカウントでは、片道 GO 通知(https://XXXX)で入力した条件にそって、その条件に対して一度のみ通知いたします。（全条件の場合、新しい片道レンタカーが表示される度に通知いたします）
 
-アプリタイプ ：ウェブアプリ（ネイティブアプリも選択可能）
+- アプリタイプ ：ウェブアプリ（ネイティブアプリも選択可能）
 
 2 要素認証の必須化：ON
 
-メールアドレス：有効なメールアドレス
+- メールアドレス：有効なメールアドレス
 
-プライバシーポリシー URL：https:XXX（任意だが本番の設定推奨）
+- プライバシーポリシー URL：https:XXX（任意だが本番の設定推奨）
 
-利用規約：https:XXX（任意だが本番の設定推奨）
+- 利用規約：https:XXX（任意だが本番の設定推奨）
 
 11. コンソール設定 → 作成したブロバイダー選択 → 作成チャネル「LINE ログイン」選択 → 「チャネル基本設定」
 
-リンクされた LINE 公式アカウント：作成した LINE 公式アカウントを選択して更新
+- リンクされた LINE 公式アカウント：作成した LINE 公式アカウントを選択して更新
 
-メールアドレス取得権限：任意だが、今回は念のため申請しました（プライバシーポリシーのページのスクショが必要になります。「あなたのアプリが、取得したメールアドレスを、どんな目的で、どのように利用するのかを、ユーザーにきちんと説明しているか」の内容をスクショ）
+- メールアドレス取得権限：任意だが、今回は念のため申請しました（プライバシーポリシーのページのスクショが必要になります。「あなたのアプリが、取得したメールアドレスを、どんな目的で、どのように利用するのかを、ユーザーにきちんと説明しているか」の内容をスクショ）
 
 12. Clerk 側の設定（https://dashboard.clerk.com/apps） → アプリケーション選択
 
 Configure → SSO connections → LINE の設定アイコンをクリック
 
-Enable for sign-up and sign-in：ON
+- Enable for sign-up and sign-in：ON
 
-Use custom credentials：ON
+- Use custom credentials：ON
 
-Channel ID：LINE のチャネル ID
+- Channel ID：LINE のチャネル ID
 
-Channel Secret：LINE のチャネルシークレット
+- Channel Secret：LINE のチャネルシークレット
 
-Callback URL：表示された値は、後で使用するのでコピーする
+- Callback URL：表示された値は、後で使用するのでコピーする
 
-Scopes：空で OK（デフォルトで profile,openid,email が設定される）
+- Scopes：空で OK（デフォルトで profile,openid,email が設定される）
 
-Always show account selector prompt：ON（ON で毎回「どの LINE アカウントでログインしますか？」を表示する意味）
+- Always show account selector prompt：ON（ON で毎回「どの LINE アカウントでログインしますか？」を表示する意味）
 
 13. コンソール設定 → チャネル選択 → 「LINE ログイン設定」
 
-コールバック URL：Callback URL を貼り付け
+- コールバック URL：Callback URL を貼り付け
 
-チャネル名（上部）あたりにある「開発」→「公開」に変更
+- チャネル名（上部）あたりにある「開発」→「公開」に変更
 
 ## 5. LINE ログイン友達追加するを表示する
 
-※省略しました。エラー制業が複雑またはカスタムできる部分が限られていたため、今回は友達追加するボタンを別で用意しました。
+<font color="red">※省略しました。エラー制業が複雑またはカスタムできる部分が限られていたため、今回は友達追加するボタンを別で用意しました。</font>
 
 実装する場合は、既存コンポーネントではパラメータが足りないので、パラメータ追加したカスタムコンポーネントボタンを作成する必要があります。
 
