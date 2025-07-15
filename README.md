@@ -26,22 +26,20 @@ npm run dev
 
 1. ブロバイダーは LINE のみ選択し以下実行
 
-``
+```
 npm install @clerk/nextjs
 npm install @clerk/localizations
-
 ```
 
-2. /src/app/layout.tsxにブロバイダーコード記述
+2. /src/app/layout.tsx にブロバイダーコード記述
 
 3. /src/app/(auth)/sign-in/[[..sign-in]]/page.tsx を作成してコード貼り付け
 
-4. /src/middleware.tsを作成してコード貼り付け
+4. /src/middleware.ts を作成してコード貼り付け
 
-5. .env.local作成して値を貼り付け
+5. .env.local 作成して値を貼り付け
 
 ```
-
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=XXXX
 CLERK_SECRET_KEY=XXXX
 
@@ -62,7 +60,6 @@ NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
 # サインアウト後は <ClerkProvider afterSignOutUrl={"/"}> で
 
 NEXT_PUBLIC_LINE_ADD_URL=LINE の友達追加する URL
-
 ```
 
 ## 3.利用規約とプライバシーポリシーページ作成
@@ -190,7 +187,7 @@ https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={CHANN
 
 {SCOPE_LIST}：Clerk のカスタム資格情報で登録した「スコープ」値（デフォルトは profile openid email）。Clerk が自動的に URL エンコードしてセット
 
-````
+```
 
 ## 6. ログイン後の指定条件入力ページ作成（/dashboard）：実装中
 
@@ -210,7 +207,7 @@ yarn dev
 pnpm dev
 # or
 bun dev
-````
+```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
