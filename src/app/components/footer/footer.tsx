@@ -1,7 +1,9 @@
-import { COMMON } from "@/app/config/common";
+import { COMMON } from "@/config/common";
 import styles from "./footer.module.css";
 import Link from "next/link";
 
+// パフォーマンスが問題になった場合、memo化を検討してください。
+// 現状では、レンダリングコストが低く、不要なオーバーヘッドを避けるためmemo化していません。
 const Footer = () => {
   return (
     <footer className={styles.footer}>

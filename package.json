@@ -11,17 +11,27 @@
   "dependencies": {
     "@clerk/localizations": "^3.18.0",
     "@clerk/nextjs": "^6.24.0",
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "hono": "^4.8.5",
+    "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.60.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250718.0",
     "@eslint/eslintrc": "^3",
+    "@types/jquery": "^3.5.32",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.25.0"
   }
 }

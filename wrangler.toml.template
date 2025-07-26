@@ -1,0 +1,19 @@
+# Cloudflare Worker（アプリケーション）の名前
+name = "one-way-go-notice-worker"
+
+# エントリーポイント
+main = "worker/index.ts"
+
+# 互換性日付（重要）
+compatibility_date = "XXXX-XX-XX" # ファイルを作成した日付（または何かしら機能を更新した日）
+
+# データベース作成コマンド実行時に表示されたD1データベースの情報を貼り付けます
+[[d1_databases]]
+binding = "DB" # Workerからデータベースを呼び出すときの名前になります
+database_name = "作成したDBの名前"
+database_id = "作成したDBのID"
+
+[vars]
+ALLOWED_ORIGIN = "http://localhost:3000" # Next.jsデプロイ前に変更すること
+ENVIRONMENT = "production"
+WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/"

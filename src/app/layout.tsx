@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { jaJP } from "@clerk/localizations";
 import "./globals.css";
 
-import { COMMON } from "./config/common";
+import { COMMON } from "../config/common";
 import Footer from "./components/footer/footer";
 
 // フォントオプション設定
