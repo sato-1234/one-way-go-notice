@@ -2,7 +2,7 @@ import styles from "./page.module.css";
 import Header from "../components/header/header";
 import Link from "next/link";
 
-import { COMMON } from "../config/common";
+import { COMMON } from "../../config/common";
 
 export default function Termsofuse() {
   return (

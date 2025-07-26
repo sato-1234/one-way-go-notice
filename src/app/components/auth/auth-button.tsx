@@ -2,8 +2,9 @@
 
 import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import React from "react";
 
+// パフォーマンスが問題になった場合、memo化を検討してください。
+// 現状では、レンダリングコストが低く、不要なオーバーヘッドを避けるためmemo化していません。
 const AuthButton = () => {
   // セッション情報はこれで取得
   const { userId } = useAuth();
@@ -21,12 +22,11 @@ const AuthButton = () => {
   }
 
   // mode="modal" でモーダル表示にする
-  // 基本は強制ダイレクトの「forceRedirectUrl」を記述すればよいみたい。
   return (
     <>
       <button>
         <Link
-          href={process.env.NEXT_PUBLIC_LINE_ADD_URL || "/"}
+          href={process.env.NEXT_PUBLIC_LINE_ADD_URL!}
           target="_blank"
           rel="noopener"
         >

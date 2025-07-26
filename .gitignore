@@ -34,10 +34,18 @@ yarn-error.log*
 .env*
 
 # ただし、.env.templateだけは無視しない（例外として追跡対象にする）
-!.env.template
+!.env.local.template
+!.env.production.template
+!wrangler.toml.template
 
-# vercel
+# バックアップファイル
+bk
+
+# vercel,CloudFlare
 .vercel
+.wrangler
+wrangler.toml
+.dev.vars
 
 # typescript
 *.tsbuildinfo

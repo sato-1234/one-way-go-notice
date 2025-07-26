@@ -1,7 +1,8 @@
-import { memo } from "react";
 import styles from "./loading.module.css";
 
-const loading = memo(() => {
+// パフォーマンスが問題になった場合、memo化を検討してください。
+// 現状では、レンダリングコストが低く、不要なオーバーヘッドを避けるためmemo化していません。
+const Loading = () => {
   return (
     <div className={styles.div}>
       <div className={styles.loaderText} data-testid="loader-text">
@@ -10,6 +11,6 @@ const loading = memo(() => {
       <div className={styles.loader}></div>
     </div>
   );
-});
+};
 
-export default loading;
+export default Loading;

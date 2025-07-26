@@ -28,7 +28,7 @@ export default function Home() {
           </span>
         </p>
         <div className="link">
-          <Link href="/dashboard">指定条件を入力</Link>
+          <Link href="/dashboard">指定条件を登録</Link>
         </div>
       </main>
     </>

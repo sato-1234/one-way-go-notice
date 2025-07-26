@@ -13,7 +13,7 @@
 - **スタイリング:** Tailwind CSS（検討中）
 - **ホスティング:** Cloudflare Pages
 - **認証:** Clerk (LINE を主要な OAuth プロバイダーとして使用)
-- **データベース:** Supabase (データベース機能のみを使用。Supabase Auth は使用しない)
+- **データベース:** Cloudflare D1
 - **定期実行 & スクレイピング:** Cloudflare Workers (Cron Triggers を利用)
 - **通知:** LINE Messaging API (プッシュメッセージ)
 
@@ -33,6 +33,7 @@
 
 ## 5. 重要事項
 
+- 要件定義は、doc フォルダにあるので、doc フォルダ配下のすべてのファイルを確認すること。
 - Supabase Auth の使用を提案しないでください。認証には Clerk を使用します。
 - Vercel の機能を提案しないでください。デプロイ先は Cloudflare です。
 - Cloudflare Workers からのデータベースアクセスは、効率的かつ安全である必要があります。

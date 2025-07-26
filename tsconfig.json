@@ -18,8 +18,10 @@
         "name": "next"
       }
     ],
+    "types": ["@cloudflare/workers-types"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/lib/shared/*"] //エイリアス追加（デプロイ後もWokerからも読み出し可能）
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

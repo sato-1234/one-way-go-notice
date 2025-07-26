@@ -2,7 +2,7 @@ import styles from "../termsofuse/page.module.css";
 import Header from "../components/header/header";
 import Link from "next/link";
 
-import { COMMON } from "../config/common";
+import { COMMON } from "../../config/common";
 
 export default function Termsofuse() {
   return (
@@ -178,7 +178,7 @@ export default function Termsofuse() {
         <p>
           当サイトが、お客様から取得した情報に関して安全管理のために講じた措置につきましては、
           <Link
-            href={process.env.NEXT_PUBLIC_CONTACT_URL || "/"}
+            href={process.env.NEXT_PUBLIC_CONTACT_URL!}
             target="_blank"
             rel="noopener"
           >
