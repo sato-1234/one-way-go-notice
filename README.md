@@ -415,6 +415,10 @@ fetch('デプロイ先のWORKER_URL手動入力', {
 .catch(error => console.error(error));
 ```
 
+## 7. Pages Functions 用に API フォルダを整理する
+
+`main = "worker/index.ts"` のエントリーポイント変更する
+
 ---
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
