@@ -148,7 +148,7 @@ https://www.lycbiz.com/jp/service/line-official-account/ でアカウント開�
 
 12. Clerk 側の設定（https://dashboard.clerk.com/apps） → アプリケーション選択
 
-Configure → SSO connections → LINE の設定アイコンをクリック
+　　Configure → SSO connections → LINE の設定アイコンをクリック
 
 - Enable for sign-up and sign-in：ON
 
@@ -367,9 +367,9 @@ ALLOWED_ORIGIN = "http://localhost:3000"
 
 CORS と API_KEY の追加処理実装後(Clerk の middleware.ts も API ルート許可の編集がいる)、ローカル API・リモート API & 再テスト。
 
-① .env または.dev.vars の API-KEY を一致しないよう変更してテスト（エラーなら OK）
-② .env または.dev.vars の API-KEY を一致させテスト（ステータス 200 なら OK）
-③ post 番号を 3001 にしてテスト。post 番号を 3000 のみ許可しているため、エラーなら OK
+① .env または.dev.vars の API-KEY を一致しないよう変更してテスト（エラーなら OK）  
+② .env または.dev.vars の API-KEY を一致させテスト（ステータス 200 なら OK）  
+③ post 番号を 3001 にしてテスト。post 番号を 3000 のみ許可しているため、エラーなら OK  
 
 ```
 # まずはローカルAPIの再テストから
