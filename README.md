@@ -148,7 +148,7 @@ https://www.lycbiz.com/jp/service/line-official-account/ でアカウント開�
 
 12. Clerk 側の設定（https://dashboard.clerk.com/apps） → アプリケーション選択
 
-Configure → SSO connections → LINE の設定アイコンをクリック
+``　 Configure → SSO connections → LINE の設定アイコンをクリック
 
 - Enable for sign-up and sign-in：ON
 
