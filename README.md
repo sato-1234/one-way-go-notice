@@ -305,19 +305,19 @@ INSERT INTO scraping_metadata (id, status, consecutive_timeout_count) VALUES (1,
 コマンドで SQL を実行
 
 ```
-npx wrangler d1 execute one-way-go-notice-db --local --file=schema.sql
-npx wrangler d1 execute one-way-go-notice-db --remote --file=schema.sql
+npx wrangler d1 execute 作成したデータベース名 --local --file=schema.sql
+npx wrangler d1 execute 作成したデータベース名 --remote --file=schema.sql
 
 # データベース名、テーブル数、IDを確認できる
 wrangler d1 list
 
 # データ確認
-npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraping_metadata;"
-npx wrangler d1 execute one-way-go-notice-db --remote --command "SELECT * FROM scraping_metadata;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "SELECT * FROM scraping_metadata;"
+npx wrangler d1 execute 作成したデータベース名 --remote --command "SELECT * FROM scraping_metadata;"
 
 # スクレイピングで恒久エラー（HTML構造が変化したのでコードの修正必須）になった場合
 # コード修正後の手動復旧コマンド
-npx wrangler d1 execute one-way-go-notice-db --local --command "UPDATE scraping_metadata SET status = 'after_restoration' WHERE id = 1;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "UPDATE scraping_metadata SET status = 'after_restoration' WHERE id = 1;"
 ```
 
 HONO 導入
@@ -355,7 +355,7 @@ npx wrangler dev worker/index.ts --port 8788
 curl -X POST http://localhost:3000/api/scrape
 
 # http://localhost:3000/api/scrape でスクレイピングデータがD1に保存されたか確認
-npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "SELECT * FROM scraped_data;"
 ```
 
 作成した Woker（API）処理を一旦デプロイして、確認してみます。  
@@ -366,7 +366,7 @@ npx wrangler deploy
 npm run build
 npm run start
 curl -X POST http://localhost:3000/api/scrape
-npx wrangler d1 execute one-way-go-notice-db --remote --command "SELECT * FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --remote --command "SELECT * FROM scraped_data;"
 ```
 
 セキュリティ対策：API 実行（URL）のアクセスは定期実行とテスト時の手動実行にする。
@@ -398,11 +398,11 @@ CORS と API_KEY の追加処理実装後(Clerk の middleware.ts も API ルー
 
 ```
 # まずはローカルAPIの再テストから
-npx wrangler d1 execute one-way-go-notice-db --local --command "DELETE FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "DELETE FROM scraped_data;"
 npm run dev
 npx wrangler dev worker/index.ts --port 8788
 curl -v -X POST http://localhost:3000/api/scrape
-npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "SELECT * FROM scraped_data;"
 
 # CORS テスト：post番号を3001にしてブラウザのコンソールに入力してテスト
 npm run dev -- --port 3001
@@ -420,12 +420,12 @@ fetch('http://localhost:8788/api/scrape', {
 .catch(error => console.error(error));
 
 # リモートAPIの再テスト
-npx wrangler d1 execute one-way-go-notice-db --remote --command "DELETE FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --remote --command "DELETE FROM scraped_data;"
 npx wrangler deploy
 npm run build
 npm run start
 curl -v -X POST http://localhost:3000/api/scrape
-npx wrangler d1 execute one-way-go-notice-db --remote --command "SELECT * FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --remote --command "SELECT * FROM scraped_data;"
 
 # CORS テスト：post番号を3001にしてブラウザのコンソールに入力してテスト
 fetch('デプロイ先のWORKER_URL手動入力', {
@@ -469,8 +469,9 @@ database_id = "${D1_DATABASE_ID}"
 
 [vars]
 ALLOWED_ORIGIN = "${ALLOWED_ORIGIN}"
+WORKER_API_SECRET = "${WORKER_API_SECRET}"
 ENVIRONMENT = "production"
-WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/"
+WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/" # dev.varsに設定しない場合、こちらが使用される
 ```
 
 package.json 　作成
@@ -526,7 +527,7 @@ npm i
 プロジェクト直下の package.json 　編集
 
 ```
-# --d1=DB これはD1のDB名
+# --d1=作成したデータベース名、--d1=DBではないので注意
 {
   "name": "one-way-go-notice",
   "version": "0.1.0",
@@ -544,14 +545,15 @@ npm i
 # "scripts"で再定義した内容で実行。「3000」と「8788」にアクセス可能になる
 npm run dev
 
-# ローカルではhttp://localhost:300/api/scrape（Next.js_API）から、http://localhost:8788/api/scrape （Hono_API）に経由のテストはできないため、ローカルでは8788に直接アクセスしてテスト
+# ローカルではhttp://localhost:3000/api/scrape（Next.js_API）から、http://localhost:8788/api/scrape （Hono_API）に経由のテストはできないため、ローカルでは8788に直接アクセスしてテスト
 # 本番ではNext.js_API→ Hono_APIのテストは可能（同じポート番号になるため）
 # API_KEYの部分は適切値に書き換えてください。
 curl -v -X POST http://localhost:8788/api/scrape -H "Authorization: Bearer API_KEY"
 
-npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
+npx wrangler d1 execute 作成したデータベース名 --local --command "SELECT * FROM scraped_data;"
 
-# `Ctrl + c` だけでは3000ポートが起動中と思うので、プロセス番号を確認して（Windowsの場合）、プロセス強制終了させる
+# `Ctrl + c` だけでは3000ポートが起動中と思うので、プロセス番号を確認して、プロセス強制終了させる
+# 以下のコマンドはWindows用
 netstat -ano | findstr :3000
 taskkill /F /PID 確認したプロセス番号
 netstat -ano | findstr :8788

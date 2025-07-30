@@ -105,7 +105,7 @@ status の after_restoration は、恒久エラーの手動復旧時の手動で
 
 ## 5. その他
 
-- 本機能は Cloudflare Workers 上で実装される。
+- 本機能は Cloudflare Pages Functions 上で、Hono フレームワークを用いて実装される。理由は、アーキテクチャを、より具体的に、かつ正確に記述するため。
 - HTML の解析には `axios` と `cheerio` を利用する。
 
 ## 6. 抽出データ項目の詳細（以下は例）
