@@ -29,13 +29,16 @@
 
 ## 2. 主要技術スタック（今回のタスクで利用）
 
-- **フレームワーク:** Next.js (App Router, Route Handlers)、Hono
+- **フレームワーク:** Next.js (App Router)
 - **言語:** TypeScript
+- **スタイリング:** Tailwind CSS（検討中）
 - **ホスティング:** Cloudflare Pages (統合された **Pages Functions** を利用)
 - **定期実行 & スクレイピング:** Cloudflare Workers (Cron Triggers 経由で Pages Functions を実行)
 - **認証:** Clerk (Web フロントエンドのユーザー認証)
 - **データベース:** Cloudflare D1
+- **定期実行:** Cloudflare Cron Triggers (Pages Functions を起動)
 - **通知:** LINE Messaging API (プッシュメッセージ)
+- **ローカル開発環境:** Wrangler (`wrangler pages dev --proxy ...` を使用)
 
 ## 3. あなたの役割
 

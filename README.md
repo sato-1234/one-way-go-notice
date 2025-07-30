@@ -65,7 +65,7 @@ NEXT_PUBLIC_COURT_ADDRESS=利用規約で使用する裁判所の住所（都道
 # Cloudflare Worker URLs
 # デプロイ予定先のcloudFlareでは.envは使用できない。
 # デプロイ後はcloudFlareのGUIで設定すること
-WORKER_URL=http://localhost:8787
+WORKER_URL=http://localhost:8788
 WORKER_API_SECRET=openssl で生成したAPIキーを貼り付け(後の工程で作成します)
 ```
 
@@ -231,30 +231,41 @@ D1 データベース作成
 
 ```
 npm i wrangler --save-dev
+wrangler --version
 npx wrangler logout // 以前ログインしている場合使は念のためログアウト
 npx wrangler login // ブラウザで[許可(Allow)]
 npx wrangler d1 create データベース名
 ```
 
-wrangler.toml を作成して、データベース の設定を記述
+wrangler.toml を新規作成して、データベース の設定を記述
 
 ```
-name = "Cloudflare Workerの名前"
+name = "my-app"
 
 main = "worker/index.ts" # エントリーポイント
 
-compatibility_date = "XXXX-XX-XX" # ファイルを作成した日付
+# インストールされているCloudflare Workers Runtimeがサポートする最新の互換性日付（重要）
+compatibility_date = "2025-07-12" # ファイルを作成した日付
 
 # データベース作成コマンド実行時に表示されたD1データベースの情報を貼り付けます
 [[d1_databases]]
 binding = "DB" # Workerからデータベースを呼び出すときの名前になります
 database_name = "作成したデータベース名"
-database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # DBのID
+database_id = "${D1_DATABASE_ID}" # ローカルテストや `npx wrangler d1 execute` でSQLを利用するときは直接値に変更する必要があります!
 
 [vars]
-ALLOWED_ORIGIN = "http://localhost:3000" # Next.jsデプロイ前に変更すること
+ALLOWED_ORIGIN = "${ALLOWED_ORIGIN}"
+WORKER_API_SECRET = "${WORKER_API_SECRET}"
 ENVIRONMENT = "production"
-WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/"
+WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/" # dev.varsに設定しない場合、こちらが使用される
+```
+
+.dev.vars を新規作成（ローカルテスト用）
+
+```
+ALLOWED_ORIGIN = "http://localhost:3000"
+WORKER_API_SECRET = "openssl で生成したAPIキーを貼り付け(後の工程で作成します)"
+ENVIRONMENT = "development"
 ```
 
 schema.sql を作成（コマンドで SQL を実行するため）
@@ -294,7 +305,7 @@ INSERT INTO scraping_metadata (id, status, consecutive_timeout_count) VALUES (1,
 コマンドで SQL を実行
 
 ```
-npx wrangler d1 execute one-way-go-notice-db --file=schema.sql
+npx wrangler d1 execute one-way-go-notice-db --local --file=schema.sql
 npx wrangler d1 execute one-way-go-notice-db --remote --file=schema.sql
 
 # データベース名、テーブル数、IDを確認できる
@@ -316,14 +327,29 @@ npm install hono
 npm install @types/hono --save-dev
 ```
 
-スクレイピング実装完了後、以下を実行し、http://localhost:3000/api/scrape にアクセスしてテスト。
+HONO_API のディレクトリ構成
+
+```
+プロジェクト名
+|- worker
+|   | - index.ts // 追加API処理がある場合、そのルートを定義
+|   | - src
+|   |   |- routes/scrape.ts // 追加API処理がある場合、別ファイルを作成する
+
+```
+
+スクレイピング実装完了後、ローカルで API のテスト  
+http://localhost:3000/api/scrape で Next.js_API にアクセス。API_KEY セットし HONO_API アクセス  
+http://localhost:8788/api/scrape で CORS かつ API_KEY 認証後に処理が実行される  
+2 段階にわける理由は、クライアントから API_KEY のリクエストをなしにするため  
+(API_KEY はバックエンドのみで把握できればよい)
 
 ```
 # http://localhost:3000/api/scrape 用
 npm run dev
 
-# http://localhost:8787/api/scrape HONOのAPI処理用(D1接続処理)
-npx wrangler dev worker/index.ts --port 8787
+# http://localhost:8788/api/scrape HONOのAPI処理用(D1接続処理)
+npx wrangler dev worker/index.ts --port 8788
 
 # APIがgetではなくpostで実装している場合は、curlを使用。
 curl -X POST http://localhost:3000/api/scrape
@@ -332,7 +358,8 @@ curl -X POST http://localhost:3000/api/scrape
 npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
 ```
 
-作成した Woker（API）処理を一旦デプロイして、確認してみます。
+作成した Woker（API）処理を一旦デプロイして、確認してみます。  
+（cloudFlare 側で環境変数を適切に設定すること）
 
 ```
 npx wrangler deploy
@@ -345,7 +372,7 @@ npx wrangler d1 execute one-way-go-notice-db --remote --command "SELECT * FROM s
 セキュリティ対策：API 実行（URL）のアクセスは定期実行とテスト時の手動実行にする。
 
 ```
-openssl rand -base64 32 # 共有シークレット (APIキー) 作成（テスト時の手動用）
+openssl rand -base64 32 # 共有シークレット (APIキー) 作成
 npx wrangler login
 npx wrangler secret put WORKER_API_SECRET
 ?Enter a secret value: APIキー貼り付け
@@ -357,12 +384,10 @@ npx wrangler secret put WORKER_API_SECRET
 WORKER_API_SECRET=APIキー貼り付け
 ```
 
-.dev.vars を新規作成してこちらにも API-KEY 追加（ローカルでの手動テスト用）
+.dev.vars にも API-KEY 追加
 
 ```
 WORKER_API_SECRET = "APIキー貼り付け"
-ENVIRONMENT = "development"
-ALLOWED_ORIGIN = "http://localhost:3000"
 ```
 
 CORS と API_KEY の追加処理実装後(Clerk の middleware.ts も API ルート許可の編集がいる)、ローカル API・リモート API & 再テスト。
@@ -375,15 +400,15 @@ CORS と API_KEY の追加処理実装後(Clerk の middleware.ts も API ルー
 # まずはローカルAPIの再テストから
 npx wrangler d1 execute one-way-go-notice-db --local --command "DELETE FROM scraped_data;"
 npm run dev
-npx wrangler dev worker/index.ts --port 8787
+npx wrangler dev worker/index.ts --port 8788
 curl -v -X POST http://localhost:3000/api/scrape
 npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
 
 # CORS テスト：post番号を3001にしてブラウザのコンソールに入力してテスト
 npm run dev -- --port 3001
-npx wrangler dev worker/index.ts --port 8787
+npx wrangler dev worker/index.ts --port 8788
 # curl -v -X POST http://localhost:3000/api/scrape だとブラウザ(CORS)ではなく(curl)処理になるため、http://localhost:3001 の画面を開いて、以下をコンソールに入力。ペーストできない場合「allow pasting」を直接入力しEnter後に、ペースト
-fetch('http://localhost:8787/api/scrape', {
+fetch('http://localhost:8788/api/scrape', {
     method: 'POST',
     headers: {
         // 正しいAPIキーを手動で設定
@@ -415,9 +440,123 @@ fetch('デプロイ先のWORKER_URL手動入力', {
 .catch(error => console.error(error));
 ```
 
-## 7. Pages Functions 用に API フォルダを整理する：実装中
+## 7. Pages Functions 用に Hono_API フォルダとファイルを編集する
 
-`main = "worker/index.ts"` のエントリーポイント変更する
+ディレクトリ構成を変更
+
+```
+# worker →　functions
+プロジェクト名
+|- functions
+|   | - api
+|   |   |- [[path]].ts // index.ts → [[path]].ts
+|   |   |- routes/scrape.ts
+|   | - package.json // 独立したアプリケーションなるため別で必要
+|   | - tsconfig.json // 独立したアプリケーションなるため別で必要
+```
+
+wrangler.toml を編集（name と main 削除）
+
+```
+# インストールされているCloudflare Workers Runtimeがサポートする最新の互換性日付（重要）
+compatibility_date = "2025-07-12" # ファイルを作成した日付
+
+# データベース作成コマンド実行時に表示されたD1データベースの情報を貼り付けます
+[[d1_databases]]
+binding = "DB" # Workerからデータベースを呼び出すときの名前になります
+database_name = "作成したデータベース名"
+database_id = "${D1_DATABASE_ID}"
+
+[vars]
+ALLOWED_ORIGIN = "${ALLOWED_ORIGIN}"
+ENVIRONMENT = "production"
+WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/"
+```
+
+package.json 　作成
+
+```
+// "wrangler": "^4.25.0" はwranglerのコードを直接importすることはないため、依存関係としては不要です。
+{
+  "private": true,
+  "main": "./api/[[path]].ts",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "hono": "^4.8.5",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250718.0"
+  }
+}
+
+```
+
+tsconfig.json 作成
+
+```
+{
+  "compilerOptions": {
+    // Cloudflare Workers環境で一般的な設定
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // このプロジェクトで利用可能な型定義を明示する(重要な設定)
+    "types": ["@cloudflare/workers-types"]
+  },
+  // このtsconfig.jsonが管轄するファイルを指定
+  "include": ["**/*.ts"]
+}
+```
+
+npm install を実行
+
+```
+cd functions
+npm i
+```
+
+プロジェクト直下の package.json 　編集
+
+```
+# --d1=DB これはD1のDB名
+{
+  "name": "one-way-go-notice",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx wrangler pages dev --d1=作成したデータベース名 --proxy 3000 -- npm run dev:next",//修正
+    "dev:next": "next dev",
+```
+
+Pages Functions 用にコードを修正後、再 API ローカルテスト
+
+```
+npm i
+
+# "scripts"で再定義した内容で実行。「3000」と「8788」にアクセス可能になる
+npm run dev
+
+# ローカルではhttp://localhost:300/api/scrape（Next.js_API）から、http://localhost:8788/api/scrape （Hono_API）に経由のテストはできないため、ローカルでは8788に直接アクセスしてテスト
+# 本番ではNext.js_API→ Hono_APIのテストは可能（同じポート番号になるため）
+# API_KEYの部分は適切値に書き換えてください。
+curl -v -X POST http://localhost:8788/api/scrape -H "Authorization: Bearer API_KEY"
+
+npx wrangler d1 execute one-way-go-notice-db --local --command "SELECT * FROM scraped_data;"
+
+# `Ctrl + c` だけでは3000ポートが起動中と思うので、プロセス番号を確認して（Windowsの場合）、プロセス強制終了させる
+netstat -ano | findstr :3000
+taskkill /F /PID 確認したプロセス番号
+netstat -ano | findstr :8788
+taskkill /F /PID 確認したプロセス番号
+```
 
 ---
 

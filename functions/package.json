@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "main": "./api/[[path]].ts",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "hono": "^4.8.5",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250718.0"
+  }
+}

@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { type Cheerio, load as cheerioLoad } from "cheerio";
 import { type Element } from "domhandler";
 import axios from "axios";
-import { ServiceItem } from "@/types/service";
+import { ServiceItem } from "../../../src/types/service"; // 共有の型をインポート
 import { v4 as uuidv4 } from "uuid";
 
 // --- D1の型定義 ---
@@ -115,6 +115,7 @@ const saveScrapedData = async (db: D1Database, items: ServiceItem[]) => {
   await db.batch(batch);
 };
 
+// _middleware.tsから/scrapeパスでルーティングされる
 const scrape = new Hono<{ Bindings: Env }>();
 
 scrape.post("/", async (c) => {

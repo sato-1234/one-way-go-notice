@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npx wrangler pages dev --d1=one-way-go-notice-db --proxy 3000 -- npm run dev:next",
+    "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

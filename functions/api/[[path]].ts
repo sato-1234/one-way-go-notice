@@ -1,21 +1,24 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import scrapeRoutes from "./src/routes/scrape";
+//import type { PagesFunction } from "@cloudflare/workers-types";
+// Honoから 'handle' をインポートする
+import { handle } from "hono/cloudflare-pages";
+import scrapeRoutes from "./routes/scrape";
 // 相対パスでインポート（Wokerはtsconfig.jsonのルールが適用されない。そのため相対でないとビルド時エラーになる）
-import {
-  ALLOWED_API_PATHS,
-  type AllowedApiPath,
-} from "../src/lib/shared/api-paths";
 
 // --- 環境変数の型定義 ---
-interface Env {
-  DB: import("@cloudflare/workers-types").D1Database;
+// PagesFunctionのジェネリクスで指定するため、ここに集約
+// Cloudflare Pages Functionsでは、`PagesFunction`のジェネリクスでEnvを指定するのが一般的です
+export interface Env {
+  DB: D1Database; //import("@cloudflare/workers-types").D1Database;
   WORKER_SCRAPING_TARGET_URL: string;
   ENVIRONMENT: "production" | "development"; // 環境変数の型定義
   ALLOWED_ORIGIN: string; // 許可するオリジンの型定義
   WORKER_API_SECRET: string; // wrangler secret put で設定したシークレットの型定義を追加
 }
 
+// const app = new Hono<{ Bindings: Env }>();
+// Honoアプリケーションの本体を、このファイルで一元管理する
 const app = new Hono<{ Bindings: Env }>().basePath("/api");
 
 // --- CORSミドルウェア適用 ---
@@ -25,7 +28,7 @@ app.use("*", (c, next) => {
   const corsMiddleware = cors({
     // 本番「wrangler.toml」またはローカル「.dev.vars」で定義したオリジンを使う
     origin: c.env.ALLOWED_ORIGIN,
-    allowMethods: ["POST", "OPTIONS"], // API処理が増えたらメゾットを増やす。'GET',など
+    allowMethods: ["GET", "POST", "OPTIONS"], // API処理が増えたらメゾットを増やす。'GET',など
   });
 
   // 決定したミドルウェアを実行する
@@ -72,7 +75,26 @@ app.use("*", async (c, next) => {
   }
 });
 
-// --- ルート定義 ---
+// --- ルーティングの定義 ---
+// /api/scrape へのリクエストを、scrape.tsの処理に委譲する
+app.route("/scrape", scrapeRoutes);
+
+// 他のAPIが増えたらここに追加
+// app.route('/status', statusRoutes);
+
+// export const onRequest = app; //export default app;
+// `onRequest`は、Honoが提供する `handle` アダプターを使用する
+export const onRequest = handle(app);
+
+/*
+
+// --- ルート定義（旧） ---
+
+import {
+  ALLOWED_API_PATHS,
+  type AllowedApiPath,
+} from "../src/lib/shared/api-paths";
+
 // 1. ルート定義オブジェクトの型を定義
 //    キーは許可されたパス名、値はHonoアプリケーションのインスタンス
 type RouteMap = Record<AllowedApiPath, Hono<any>>; // Hono<any>で一旦簡略化
@@ -101,9 +123,6 @@ for (const path of ALLOWED_API_PATHS) {
   }
 }
 
-export default app;
-
-/*
   type RouteMap = Record<AllowedApiPath, Hono<any>>:
   Record<K, T>は、「キーがK型で、値がT型であるオブジェクト」という型を定義します。
   ここでは、「キーが"scrape" | "status" | "health-check"のどれかで、値がHonoのインスタンスであるオブジェクト」という型 RouteMap を作っています。

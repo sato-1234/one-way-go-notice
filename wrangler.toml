@@ -1,0 +1,16 @@
+# ローカルで使用する場合は「wrangler.local.toml」新規作成し、${}には直接値をいれてテストします。
+
+# インストールされているCloudflare Workers Runtimeがサポートする最新の互換性日付（重要）
+compatibility_date = "2025-07-12" # ファイルを作成した日付
+
+# データベース作成コマンド実行時に表示されたD1データベースの情報を貼り付けます
+[[d1_databases]]
+binding = "DB" # Workerからデータベースを呼び出すときの名前になります
+database_name = "one-way-go-notice-db"
+database_id = "${D1_DATABASE_ID}" # ローカルテストや `npx wrangler d1 execute` でSQLを利用するときは直接値に変更する必要があります!! もし直接値を設定した場合、GITHUBにあげる際は${環境変数名}に戻す修正が必須になります!!
+
+[vars]
+ALLOWED_ORIGIN = "${ALLOWED_ORIGIN}"
+WORKER_API_SECRET = "${WORKER_API_SECRET}"
+ENVIRONMENT = "production"
+WORKER_SCRAPING_TARGET_URL = "https://cp.toyota.jp/rentacar/" # dev.varsに設定しない場合、こちらが使用される
