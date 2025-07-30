@@ -18,7 +18,6 @@
         "name": "next"
       }
     ],
-    "types": ["@cloudflare/workers-types"],
     "paths": {
       "@/*": ["./src/*"],
       "@/shared/*": ["./src/lib/shared/*"] //エイリアス追加（デプロイ後もWokerからも読み出し可能）

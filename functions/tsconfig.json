@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    // Cloudflare Workers環境で一般的な設定
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // このプロジェクトで利用可能な型定義を明示する(重要な設定)
+    "types": ["@cloudflare/workers-types"]
+  },
+  // このtsconfig.jsonが管轄するファイルを指定
+  "include": ["**/*.ts"]
+}

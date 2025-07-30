@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+functions/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -36,7 +37,6 @@ yarn-error.log*
 # ただし、.env.templateだけは無視しない（例外として追跡対象にする）
 !.env.local.template
 !.env.production.template
-!wrangler.toml.template
 
 # バックアップファイル
 bk
@@ -44,7 +44,7 @@ bk
 # vercel,CloudFlare
 .vercel
 .wrangler
-wrangler.toml
+.wrangler.local.toml
 .dev.vars
 
 # typescript
