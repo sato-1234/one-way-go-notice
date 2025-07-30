@@ -94,8 +94,8 @@ sequenceDiagram
 
 ### 6.1. 認証フロー
 
-**1. Cron Trigger:** Pages Function は、Cf-Cron: true ヘッダーの存在を検証する。このヘッダーは Cloudflare インフラ内部でのみ付与され、偽装不可。
-**1. Next.js Proxy:** Pages Function は、Authorization: Bearer [API_KEY]ヘッダーの存在と値を検証する。API キーは Next.js API Proxy のサーバーサイド（環境変数）でのみ管理され、クライアントには公開されない。
+1. **Cron Trigger:** Pages Function は、Cf-Cron: true ヘッダーの存在を検証する。このヘッダーは Cloudflare インフラ内部でのみ付与され、偽装不可。
+1. **Next.js Proxy:** Pages Function は、Authorization: Bearer [API_KEY]ヘッダーの存在と値を検証する。API キーは Next.js API Proxy のサーバーサイド（環境変数）でのみ管理され、クライアントには公開されない。
 
 ## 7. エラーハンドリング
 
